@@ -66,7 +66,7 @@ namespace api.Controllers
 
         [HttpGet]
         [Route("execute")]
-        public async Task<IActionResult> ExecuteApi([FromQuery] string apiUrl, [FromQuery] string model = null)
+        public async Task<IActionResult> ExecuteApi([FromQuery] string apiUrl, [FromQuery] string? model = null)
         {
             try
             {
