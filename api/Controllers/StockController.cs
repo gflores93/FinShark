@@ -41,15 +41,28 @@ namespace api.Controllers
         public IActionResult Create([FromBody] CreateStockRequestDto stockDto) {
             var stockModel = stockDto.ToStockFromCreateDto();
             _context.Stocks.Add(stockModel);
+            // as Id is autoincremented when SaveChanges() gets exectued stockModel gets it's value assigned
             _context.SaveChanges();
-            /*
-            stockModel gets updated after the SQL insert, and as Id is defined as idenitity 
-            after SaveChanges() stockModel gets an id value even though it was not assign by the ToStockFromCreateDto() method.
-
-            CreatedAtAction method provides the URI of the method with the param passed in args1 and args2. written in response.header.location
-            arg3 is the object response
-            */
+            // CreatedAtAction use arg1 and arg2 for the URI (response.header.location) and arg3 as the return obj
             return CreatedAtAction(nameof(GetById), new {id = stockModel.Id}, stockModel.ToStockDto());
+        }
+
+        [HttpPut]
+        [Route ("{id}")]
+        public IActionResult Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto) {
+            var stockModel = _context.Stocks.FirstOrDefault(x => x.Id == id);
+            if(stockModel == null) {
+                return NotFound();
+            }
+            stockModel.Symbol = updateDto.Symbol;
+            stockModel.CompanyName = updateDto.CompanyName;
+            stockModel.Purchase = updateDto.Purchase;
+            stockModel.LastDiv = updateDto.LastDiv;
+            stockModel.Industry = updateDto.Industry;
+            stockModel.MarketCap = updateDto.MarketCap;
+
+            _context.SaveChanges();
+            return Ok(stockModel.ToStockDto());
         }
     }
 }
