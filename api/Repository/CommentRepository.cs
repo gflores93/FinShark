@@ -14,12 +14,26 @@ namespace api.Repository
         private readonly ApplicationDBContext _context;
         public CommentRepository(ApplicationDBContext context)
         {
-         _context = context;   
+            _context = context;
         }
 
         public async Task<Comment> CreateAsync(Comment commentModel)
         {
             await _context.Comments.AddAsync(commentModel);
+            await _context.SaveChangesAsync();
+            return commentModel;
+        }
+
+        public async Task<Comment?> DeleteAsync(int id)
+        {
+            var commentModel = await _context.Comments.FirstOrDefaultAsync(x => x.Id == id);
+            if (commentModel == null)
+            {
+                return null;
+            }
+
+            // Remove does not have an await method
+            _context.Comments.Remove(commentModel);
             await _context.SaveChangesAsync();
             return commentModel;
         }
@@ -37,7 +51,8 @@ namespace api.Repository
         public async Task<Comment?> UpdateAsync(int id, Comment commentModel)
         {
             var existingComment = await _context.Comments.FindAsync(id);
-            if (existingComment == null) {
+            if (existingComment == null)
+            {
                 return null;
             }
             existingComment.Title = commentModel.Title;
