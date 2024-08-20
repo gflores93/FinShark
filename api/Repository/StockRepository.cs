@@ -27,6 +27,8 @@ namespace api.Repository
             if (stockModel == null) {
                 return null;
             }
+
+            //TODO: If there are comments related to the stock they need to be removed (reference constraint FK)
             _context.Stocks.Remove(stockModel);
             await _context.SaveChangesAsync();
             return stockModel;
