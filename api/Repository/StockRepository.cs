@@ -59,7 +59,11 @@ namespace api.Repository
                 }
                 //If another sorting property is required we can use the same logic
             }
-            return await stocks.ToListAsync();
+
+            // Pagination
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            
+            return await stocks.Skip(skipNumber).Take(query.PageSize).ToListAsync();
         }
 
         public async Task<Stock?> GetByIdAsync(int id)
