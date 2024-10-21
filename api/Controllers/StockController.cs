@@ -23,7 +23,7 @@ namespace api.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var stocks = await _stockRepo.GetAllAsync(query);
-            var stockDto = stocks.Select(s => s.ToStockDto()); // Select method is the equivalent of a map in js
+            var stockDto = stocks.Select(s => s.ToStockDto()).ToList(); // Select method is the equivalent of a map in js
             return Ok(stockDto);
         }
 
